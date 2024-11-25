@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# TypeScript build output
+/dist/
+/build/
+
+/# TypeScript and Jest output
+*.log
+*.tsbuildinfo
+
+# IDE or editor specific files
+.vscode/
+.idea/
+
+# npm package lock files (optional)
+package-lock.json
+yarn.lock
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Test coverage directory (if you use Jest or other testing frameworks)
+coverage/
+
+# Environment files
+.env
