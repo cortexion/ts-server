@@ -1,0 +1,49 @@
+name: CI and Deploy Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: [self-hosted]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build the app
+        run: |
+          cd ~/ts-server
+          git pull origin main
+          npm install
+          npm run build
+
+      - name: Build Docker image
+        run: |
+          cd ~/ts-server
+          docker build -t my-ts-server:latest .
+
+      - name: Stop and remove existing container (if running)
+        run: |
+          docker ps -aq --filter "name=my-ts-server-container" | xargs -r docker stop
+          docker ps -aq --filter "name=my-ts-server-container" | xargs -r docker rm
+
+      - name: Run Docker container
+        run: |
+          docker run -d -p 80:80 --name my-ts-server-container my-ts-server:latest
